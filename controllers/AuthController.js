@@ -6,7 +6,7 @@ const generateToken=require('../utils/generateToken')
 express().use(express.json())
 const registerUser=async (req,res)=>{
     try{
-    const {firstName,lastName,email,password,skills,profileURL,gender}=req.body;
+    const {firstName,lastName,email,password,skills,profileURL,gender,bio}=req.body;
     if(!firstName.trim() || !email.trim() ||!password.trim()|| !gender ){
         return res.status(404).send("Enter all the required fields");
     
@@ -17,7 +17,7 @@ const registerUser=async (req,res)=>{
     }
     const passwordHash=await bcrypt.hash(password,10);
     const user=await new User({
-        firstName,lastName,email,skills,profileURL,gender,
+        firstName,lastName,email,skills:skills.split(','),profileURL,gender,bio,
         password:passwordHash
     })
     await user.save();
@@ -41,7 +41,7 @@ const loginUser=async (req,res) => {
         if (!existingUser) {
             return res.status(400).json({ message: 'User not found please register to login ' });
         }
-        const isMatched=await bcrypt.compare(password,existingUser.password)
+        const isMatched=await existingUser.matchPassword(password)
         if(!isMatched){
             return res.status(400).send("Invalid credentials");
         }
