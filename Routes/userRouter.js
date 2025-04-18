@@ -40,6 +40,9 @@ router.get('/requestsreceived',isLoggedin,async (req,res)=>{
 })
 router.get('/feed',isLoggedin,async (req,res)=>{
     try {
+        const page=parseInt(req.query.page) || 1;
+        let limit=parseInt(req.query.limit) || 10;
+        limit=limit>100?100:limit
         const {userId}=req;
         let notinfeed=await Connectionsmodel.find({$or:[{
             fromUserId:userId,
@@ -49,7 +52,7 @@ router.get('/feed',isLoggedin,async (req,res)=>{
         notinfeed=[...notinfeed.map(row=>{
             return row.fromUserId.equals(userId)?row.toUserId:row.fromUserId
         }),userId]
-        const feed=await Usermodel.find({_id:{$nin:notinfeed}},{email:0,password:0,createdAt:0,updatedAt:0,__v:0})
+        const feed=await Usermodel.find({_id:{$nin:notinfeed}},{email:0,password:0,createdAt:0,updatedAt:0,__v:0}).skip((page-1)*limit).limit(limit)
         res.send(feed)
         
     } catch (error) {
