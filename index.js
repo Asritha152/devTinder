@@ -1,7 +1,13 @@
 const express = require('express');
 const app=express();
 const db=require('./config/mongodb-connection');
+const cors=require('cors')
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true              
+  }));
 const cookieParser=require('cookie-parser');
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));

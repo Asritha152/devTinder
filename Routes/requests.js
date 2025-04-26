@@ -6,6 +6,8 @@ const Usermodel = require('../models/Usermodel');
 // Send Connection Request
 router.post('/send/:status/:toUserId', isLoggedin, async (req, res) => {
     try {
+        console.log("request hit");
+        
         const { toUserId, status } = req.params;
         if (!['interested', 'ignored'].includes(status)) {
             return res.send('Invalid status type');
@@ -25,14 +27,16 @@ router.post('/send/:status/:toUserId', isLoggedin, async (req, res) => {
         });
 
         if (existingConnection) {
-            return res.status(400).send({ message: "Connection already exists." });
+            return res.status(400).json({ message: "Connection already exists." });
         }
 
         const conn = new connectionRequests({ fromUserId, toUserId, status });
         await conn.save();
         const fromUser=await Usermodel.findOne({_id:fromUserId})
         const toUser=await Usermodel.findOne({_id:toUserId})
-        return res.status(201).send({ message: `${fromUser.firstName}  ${status}  ${toUser.firstName}`  });
+        console.log("succesfull");
+        
+        return res.status(201).json({ message: `${fromUser.firstName}  ${status}  ${toUser.firstName}`  });
 
     } catch (err) {
         console.error(err);
@@ -43,6 +47,8 @@ router.post('/send/:status/:toUserId', isLoggedin, async (req, res) => {
 // Review Connection Request
 router.post('/review/:status/:requestId', isLoggedin, async (req, res) => {
     try {
+        console.log("review request hit");
+        
         const { requestId, status } = req.params;
         if (!['accepted', 'rejected'].includes(status)) {
             return res.send('Invalid status type');
@@ -56,10 +62,10 @@ router.post('/review/:status/:requestId', isLoggedin, async (req, res) => {
         await connectionRequests.findByIdAndUpdate(existingConnection._id, { status });
         const fromUser=await Usermodel.findOne({_id:existingConnection.fromUserId})
         const toUser=await Usermodel.findOne({_id:toUserId})
-        return res.status(201).send({ message: `${toUser.firstName}  ${status}  ${fromUser.firstName}` ,connection:{existingConnection} });
+        return res.status(201).json({ message: `${toUser.firstName}  ${status}  ${fromUser.firstName}` ,connection:{existingConnection} });
 
     } catch (error) {
-        console.error(error);
+        console.error(error.message);
         res.status(500).send({ error: "Something went wrong." });
     }
 });

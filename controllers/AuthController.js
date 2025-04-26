@@ -13,11 +13,12 @@ const registerUser=async (req,res)=>{
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+        console.log("user thereu");
         return res.status(400).json({ message: 'User already exists' });
     }
     const passwordHash=await bcrypt.hash(password,10);
     const user=await new User({
-        firstName,lastName,email,skills:skills.split(','),profileURL,gender,bio,
+        firstName,lastName,email,skills,profileURL:profileURL|| 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',gender,bio,
         password:passwordHash
     })
     await user.save();

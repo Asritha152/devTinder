@@ -6,19 +6,21 @@ const  router = require('express').Router();
 
 router.get('/',isLoggedin,async (req,res)=>{
     try {
-        const user=await Usermodel.find({_id:req.userId});
-    res.json(user);
+    const user=await Usermodel.findOne({_id:req.userId}).select('-password -email');
+    res.json({user});
         
     } catch (error) {
-        res.send('error fetching profile ')
+        res.json({message:'error fetching profile '})
         
     }
     
 })
 
-router.patch('/edit',isLoggedin,async (req,res)=>{
+router.put('/edit',isLoggedin,async (req,res)=>{
     try {
         const userId=req.userId;
+        console.log(req.body);
+        
     const {firstName,lastName,skills,profileURL,gender,bio}=req.body;
     if (!firstName || !gender) {
         return res.status(400).send('Enter all the required fields')
@@ -26,9 +28,9 @@ router.patch('/edit',isLoggedin,async (req,res)=>{
     }
     const updatedUser=await Usermodel.findByIdAndUpdate(userId,{
     firstName,lastName,skills,profileURL,gender,bio },{new:true})
-       res.json(updatedUser) 
+       res.json({updatedUser}) 
     } catch (error) {
-        res.send('Error updating the user information')  
+        res.json({message:'Error updating the user information'})  
     }
 })
 
