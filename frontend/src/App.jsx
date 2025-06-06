@@ -12,13 +12,14 @@ import axios from 'axios'
 import Feed from './components/Feed';
 import Myconnections from './components/Myconnections';
 import RequestsReceived from './components/RequestsReceived';
+import { apiurl } from './utils/constants';
 function App() {
   const dispatch = useDispatch();
   const navigate=useNavigate();
   useEffect(()=>{
     async function getdata(params) {
       try {
-        const res = await axios.get("http://localhost:3000/profile", {
+        const res = await axios.get(`${apiurl}/profile`, {
           withCredentials: true,
         });
         console.log(res?.data?.user);
