@@ -1,52 +1,61 @@
-// client/src/App.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+
 import Register from './components/Register';
-import {Routes,Route, useNavigate}  from 'react-router-dom'
 import Login from './components/Login';
 import Nav from './components/Nav';
 import Editprofile from './components/Editprofile';
-import { useDispatch, useSelector } from 'react-redux';
-import { setuser } from './utils/userSlice';
-import { setisLogggedin } from './utils/loginSlice';
-import axios from 'axios'
 import Feed from './components/Feed';
 import Myconnections from './components/Myconnections';
 import RequestsReceived from './components/RequestsReceived';
-import { apiurl } from './utils/constants';
+
+import { setuser } from './utils/userSlice';
+import { setisLogggedin } from './utils/loginSlice';
+import { apiurl } from './utils/constants'; // Make sure this is defined as `export const apiurl = import.meta.env.VITE_API_URL`
+
 function App() {
   const dispatch = useDispatch();
-  const navigate=useNavigate();
-  useEffect(()=>{
-    async function getdata(params) {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // 👈 Add loading state
+
+  useEffect(() => {
+    async function getdata() {
       try {
+        console.log("API URL in App.jsx:", apiurl); // ✅ Debug
         const res = await axios.get(`${apiurl}/profile`, {
           withCredentials: true,
         });
-        console.log(res?.data?.user);
-        dispatch(setuser(res?.data?.user))
-        dispatch(setisLogggedin(true))
-        navigate('/')
-        
+        dispatch(setuser(res?.data?.user));
+        dispatch(setisLogggedin(true));
+        navigate('/'); // ✅ Redirect to home only if login is valid
       } catch (error) {
-          console.log(error.message);
-           navigate('/login')
+        console.log("Error fetching profile:", error.message);
+        navigate('/login'); // ✅ Redirect to login if not authenticated
+      } finally {
+        setLoading(false); // ✅ Done loading
       }
     }
     getdata();
-    
-  },[])
-  return (<>
-  <Nav></Nav>
-    <Routes>
-      <Route path='/login' element={<Login></Login>}></Route>
-      <Route path='/' element={<Feed></Feed>}></Route>
-      <Route path='/register' element={<Register></Register>}></Route>
-      <Route path='/edit' element={<Editprofile></Editprofile>}></Route>
-      <Route path='/connections' element={<Myconnections></Myconnections>}></Route>
-      <Route path='/requestsreceived' element={<RequestsReceived></RequestsReceived>}></Route>
-    </Routes>
+  }, []);
 
-  </>)
+  if (loading) return <div>Loading...</div>; // 👈 Optional UI
+
+  return (
+    <>
+      <Nav />
+      <Routes>
+        <Route path="/" element={<Feed />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/edit" element={<Editprofile />} />
+        <Route path="/connections" element={<Myconnections />} />
+        <Route path="/requestsreceived" element={<RequestsReceived />} />
+        <Route path="*" element={<Navigate to="/" />} /> {/* fallback */}
+      </Routes>
+    </>
+  );
 }
 
 export default App;
