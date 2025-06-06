@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { useContext } from 'react';
 import AlertComponent from './AlertComponent';
 import { alertcontext } from '../Contexts/AlertContext';
+import { apiurl } from '../utils/constants';
 function RequestsReceived() {
   const {showAlert,alert}=useContext(alertcontext);
     const [requests,setrequests]=useState([]);
       const handleClick=async (status,req)=>{
         try{
-         const res= await axios.post(`http://localhost:3000/request/review/${status}/${req._id}`,{},{
+         const res= await axios.post(`${apiurl}/request/review/${status}/${req._id}`,{},{
             withCredentials:true
           })
            console.log(status+" request sent successfully");
@@ -26,7 +27,7 @@ function RequestsReceived() {
       }
     async function getrequests(params) {
         try {
-            const res=await axios.get('http://localhost:3000/user/requestsreceived',{
+            const res=await axios.get(`${apiurl}/user/requestsreceived`,{
                 withCredentials:true
             })
             setrequests(res?.data?.requestsReceived)

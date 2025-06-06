@@ -3,11 +3,12 @@ import axios from 'axios'
 import { useSelector,useDispatch } from 'react-redux';
 import { setFeed } from '../utils/FeedSlice';
 import ProfileCard from './ProfileCard';
+const apiurl=import.meta.env.VITE_API_URL
 function Feed() {
     const dispatch=useDispatch();
     useEffect(()=>{
         async function getfeed() {
-            const res=await axios.get('http://localhost:3000/user/feed',{
+            const res=await axios.get(`${apiurl}/user/feed`,{
                 withCredentials:true
             });
             console.log(res?.data?.feed);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import validator from 'validator';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { apiurl } from '../utils/constants';
 function Register() {
   const [skillInput, setSkillInput] = useState('');
   const [serverError, setServerError] = useState('');
@@ -51,7 +51,7 @@ function Register() {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:3000/auth/register', registerData);
+      await axios.post(`${apiurl}/auth/register`, registerData);
       navigate('/login');
     } catch (error) {
       const msg = error.response?.data?.message || 'Something went wrong';

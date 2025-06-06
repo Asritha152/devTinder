@@ -2,11 +2,12 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useEffect } from 'react';
 import ProfileCard from './ProfileCard';
+import { apiurl } from '../utils/constants';
 function Myconnections() {
     const [connections,setconnections]=useState([]);
     useEffect(()=>{
         async function getconnections(params) {
-            const res=await axios.get('http://localhost:3000/user/connections',{
+            const res=await axios.get(`${apiurl}/user/connections`,{
                 withCredentials:true
             })
             console.log(res?.data?.connections,"user ka");

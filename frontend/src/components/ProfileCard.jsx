@@ -6,16 +6,17 @@ import { setFeed } from '../utils/FeedSlice';
 import { useContext } from 'react';
 import { alertcontext } from '../Contexts/AlertContext';
 import AlertComponent from './AlertComponent';
+import { apiurl } from '../utils/constants';
 function ProfileCard({user,isEdit}) {
   const {showAlert,alert}=useContext(alertcontext);
   const dispatch=useDispatch();
   let feed=useSelector(store=>store.feed.value)
   const handleClick=async (status)=>{
     try{
-      const res=await axios.post(`http://localhost:3000/request/send/${status}/${user._id}`,{},{
+      const res=await axios.post(`${apiurl}/request/send/${status}/${user._id}`,{},{
         withCredentials:true
       })
-      console.log(`http://localhost:3000/request/send/${status}/${user._id}`);
+      console.log(`${apiurl}/request/send/${status}/${user._id}`);
       feed=feed.filter(u=>u._id!==user._id)
       dispatch(setFeed(feed))
       console.log(status+"request sent successfully");

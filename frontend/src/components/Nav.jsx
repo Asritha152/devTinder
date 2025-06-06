@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector,useDispatch } from 'react-redux';
 import { setisLogggedin } from '../utils/loginSlice';
+import { apiurl } from '../utils/constants';
 function Nav() {
   const navigate=useNavigate();
   const dispatch=useDispatch();
@@ -14,7 +15,7 @@ function Nav() {
   
   const handleClick=async ()=>{
     try {
-      await axios.get('http://localhost:3000/auth/logout',{
+      await axios.get(`${apiurl}/auth/logout`,{
         withCredentials:true
       });
       dispatch(setisLogggedin(false))

@@ -8,6 +8,7 @@ import { setisLogggedin } from "../utils/loginSlice";
 import { useContext } from "react";
 import AlertComponent from "./AlertComponent";
 import { alertcontext } from "../Contexts/AlertContext";
+const apiurl=import.meta.env.VITE_API_URL
 
 function Login() {
   const {alert,showAlert}=useContext(alertcontext)
@@ -53,13 +54,13 @@ function Login() {
     setErrors({});
     try {
       const data = await axios.post(
-        "http://localhost:3000/auth/login",
+        `${apiurl}/auth/login`,
         loginData,
         { withCredentials: true }
       );
       console.log(data);
       dispatch(setisLogggedin(true))
-      const res = await axios.get("http://localhost:3000/profile", {
+      const res = await axios.get(`${apiurl}/profile`, {
         withCredentials: true,
       });
       showAlert({type:res?.data?.type,mesage:res?.data?.message})

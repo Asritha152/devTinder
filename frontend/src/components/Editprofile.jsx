@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { alertcontext } from '../Contexts/AlertContext';
 import { useContext } from 'react';
 import AlertComponent from './AlertComponent';
+const apiurl=import.meta.env.VITE_API_URL
 const Editprofile = () => { 
   const dispacth=useDispatch()
   const {alert,showAlert}=useContext(alertcontext)
@@ -57,7 +58,7 @@ const Editprofile = () => {
       setErrors({});
       try{
       console.log('Submitted Data:', editdata);
-      const res=await axios.put('http://localhost:3000/profile/edit', editdata, {
+      const res=await axios.put(`${apiurl}/profile/edit`, editdata, {
         withCredentials: true
       });
       dispacth(setuser(editdata));
