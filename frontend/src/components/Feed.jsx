@@ -6,7 +6,7 @@ import ProfileCard from './ProfileCard';
 function Feed() {
     const dispatch=useDispatch();
     useEffect(()=>{
-        async function getfeed(params) {
+        async function getfeed() {
             const res=await axios.get('http://localhost:3000/user/feed',{
                 withCredentials:true
             });

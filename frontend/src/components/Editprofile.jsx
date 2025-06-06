@@ -5,8 +5,12 @@ import ProfileCard from './ProfileCard';
 import { useSelector } from 'react-redux';
 import { setuser } from '../utils/userSlice';
 import { useDispatch } from 'react-redux';
+import { alertcontext } from '../Contexts/AlertContext';
+import { useContext } from 'react';
+import AlertComponent from './AlertComponent';
 const Editprofile = () => { 
   const dispacth=useDispatch()
+  const {alert,showAlert}=useContext(alertcontext)
   const userdata = useSelector((store) => store.user.value);
   console.log(userdata);
   
@@ -53,14 +57,18 @@ const Editprofile = () => {
       setErrors({});
       try{
       console.log('Submitted Data:', editdata);
-      await axios.put('http://localhost:3000/profile/edit', editdata, {
+      const res=await axios.put('http://localhost:3000/profile/edit', editdata, {
         withCredentials: true
       });
       dispacth(setuser(editdata));
       console.log("edited data successfully");
+      showAlert({type:res?.data?.type,message:res?.data?.message})
+      
+    
     }
     catch(err){
       console.log(err.message);
+      showAlert({type:res?.data?.type,message:res?.data?.message})
       
     }
     
@@ -100,7 +108,12 @@ const Editprofile = () => {
   
 
   return (
-    <div className='w-full bg-gray-900 text-white h-screen flex justify-center items-center'>
+    <>
+    <div>
+    {alert && <AlertComponent alert={alert}/>}
+    </div>
+  <div className='w-full bg-gray-900 text-white h-screen flex justify-center items-center'>
+    
   <div className="w-[50%] h-[75vh] m-auto flex items-center justify-center p-4">
     <ProfileCard user={editdata} isEdit={true}></ProfileCard>
 
@@ -203,7 +216,7 @@ const Editprofile = () => {
     </div>
   </div>
 </div>
-
+</>
   );
 };
 

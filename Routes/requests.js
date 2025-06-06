@@ -36,11 +36,11 @@ router.post('/send/:status/:toUserId', isLoggedin, async (req, res) => {
         const toUser=await Usermodel.findOne({_id:toUserId})
         console.log("succesfull");
         
-        return res.status(201).json({ message: `${fromUser.firstName}  ${status}  ${toUser.firstName}`  });
+        return res.status(201).json({type:'success',message:'Connection request sent successfully'  });
 
     } catch (err) {
         console.error(err);
-        res.status(500).send({ error: "Something went wrong." });
+        res.status(500).send({type:'error', message: "Something went wrong." });
     }
 });
 
@@ -62,11 +62,13 @@ router.post('/review/:status/:requestId', isLoggedin, async (req, res) => {
         await connectionRequests.findByIdAndUpdate(existingConnection._id, { status });
         const fromUser=await Usermodel.findOne({_id:existingConnection.fromUserId})
         const toUser=await Usermodel.findOne({_id:toUserId})
-        return res.status(201).json({ message: `${toUser.firstName}  ${status}  ${fromUser.firstName}` ,connection:{existingConnection} });
+        console.log("sent aa");
+        
+        return res.status(201).json({type:'success', message: 'connection is successfull' });
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).send({ error: "Something went wrong." });
+        res.status(500).send({type:'error', message: "Something went wrong." });
     }
 });
 

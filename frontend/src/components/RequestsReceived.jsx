@@ -1,19 +1,24 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-
+import { useContext } from 'react';
+import AlertComponent from './AlertComponent';
+import { alertcontext } from '../Contexts/AlertContext';
 function RequestsReceived() {
+  const {showAlert,alert}=useContext(alertcontext);
     const [requests,setrequests]=useState([]);
       const handleClick=async (status,req)=>{
         try{
-          await axios.post(`http://localhost:3000/request/review/${status}/${req._id}`,{},{
+         const res= await axios.post(`http://localhost:3000/request/review/${status}/${req._id}`,{},{
             withCredentials:true
           })
-          
+           console.log(status+" request sent successfully");
+          showAlert({type:res?.data?.type,message:res?.data?.message})
         setrequests(requests.filter(u=>u._id!==req._id));
-          console.log(status+" request sent successfully");
+          
         }
         catch(error){
           console.log(error.message);
+          showAlert({type:'erorr',message:error.message})
           
         }
         
@@ -40,6 +45,11 @@ function RequestsReceived() {
     if(!requests) return <h1 className='w-full bg-gray-900 px-10 pt-30 text-white min-h-screen  '>Loading.</h1>
     if(requests.length===0) return <h1 className='w-full bg-gray-900 px-10 pt-30 text-white min-h-screen  font-bold'>No Requests found</h1>
   return (
+    <>
+     <div>
+      {alert&& <AlertComponent alert={alert}></AlertComponent>}
+     </div>
+   
     <div className='w-full bg-gray-900 px-10 pt-30 text-white min-h-screen flex-wrap gap-12 flex  '>
     {requests.map((req)=>{
         const user=req.fromUserId
@@ -73,6 +83,7 @@ function RequestsReceived() {
   </div> }
     )}
     </div>
+     </>
   )
 }
 

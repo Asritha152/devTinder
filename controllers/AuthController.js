@@ -14,7 +14,7 @@ const registerUser=async (req,res)=>{
     const existingUser = await User.findOne({ email });
     if (existingUser) {
         console.log("user thereu");
-        return res.status(400).json({ message: 'User already exists' });
+        return res.status(400).json({type:'error', message: 'User already exists' });
     }
     const passwordHash=await bcrypt.hash(password,10);
     const user=await new User({
@@ -22,7 +22,7 @@ const registerUser=async (req,res)=>{
         password:passwordHash
     })
     await user.save();
-    res.send("user registered successfully")}
+    res.json({type:'success',message:"user registered successfully"})}
     catch (error) {
         console.log(error.message);
         res.send("Some error occured")
@@ -40,11 +40,11 @@ const loginUser=async (req,res) => {
         }
         const existingUser = await User.findOne({ email });
         if (!existingUser) {
-            return res.status(400).json({ message: 'User not found please register to login ' });
+            return res.status(400).json({type:'error', message: 'Invalid credentials ' });
         }
         const isMatched=await existingUser.matchPassword(password)
         if(!isMatched){
-            return res.status(400).send("Invalid credentials");
+            return res.status(400).json({type:'error',message:"Invalid credentials"});
         }
         res.cookie('token',generateToken(existingUser._id),{
             httpOnly: true,

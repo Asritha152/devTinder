@@ -8,7 +8,6 @@ function Register() {
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const [registerData, setRegisterData] = useState({
     firstName: '',
     lastName: '',

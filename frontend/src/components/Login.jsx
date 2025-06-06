@@ -5,8 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { setuser } from "../utils/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setisLogggedin } from "../utils/loginSlice";
+import { useContext } from "react";
+import AlertComponent from "./AlertComponent";
+import { alertcontext } from "../Contexts/AlertContext";
 
 function Login() {
+  const {alert,showAlert}=useContext(alertcontext)
   const navigate=useNavigate()
   const dispatch = useDispatch();
   const userdata = useSelector((store) => store.user.value);
@@ -58,17 +62,23 @@ function Login() {
       const res = await axios.get("http://localhost:3000/profile", {
         withCredentials: true,
       });
-      console.log(res?.data?.user);
+      showAlert({type:res?.data?.type,mesage:res?.data?.message})
+    
       dispatch(setuser(res?.data?.user))
 
       console.log("submitted logged in");
       navigate('/')
     } catch (error) {
       console.log("error is", error.response?.data?.message);
+      showAlert({type:'error',message:error.response?.data?.message})
     }
   };
 
   return (
+    <>
+    <div>
+      {alert && <AlertComponent alert={alert}/>}
+    </div>
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-slate-800 to-gray-900">
       <form
         onSubmit={handleSubmit}
@@ -111,6 +121,7 @@ function Login() {
         </p>
       </form>
     </div>
+    </>
   );
 }
 

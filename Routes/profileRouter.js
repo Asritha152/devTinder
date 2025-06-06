@@ -10,7 +10,7 @@ router.get('/',isLoggedin,async (req,res)=>{
     res.json({user});
         
     } catch (error) {
-        res.json({message:'error fetching profile '})
+        res.json({type:'error',message:'error fetching profile'})
         
     }
     
@@ -28,9 +28,9 @@ router.put('/edit',isLoggedin,async (req,res)=>{
     }
     const updatedUser=await Usermodel.findByIdAndUpdate(userId,{
     firstName,lastName,skills,profileURL,gender,bio },{new:true})
-       res.json({updatedUser}) 
+       res.json({type:'success',message:'User updated successfully'}) 
     } catch (error) {
-        res.json({message:'Error updating the user information'})  
+        res.json({type:'error',message:'Error updating the user information'})  
     }
 })
 
